@@ -55,7 +55,7 @@ public class OrderService {
     }
 
     // update order details
-    public Order updateOrder(Long orderId) {
+    public Order updateOrder(Long orderId, Order updatedOrder) {
         Optional<Order> order = orderRepository.findById(orderId);
 
         if (order.isEmpty()) {
@@ -67,6 +67,9 @@ public class OrderService {
         if (existingOrder.getPaymentAmount() == 0.0) {
             throw new MissingParameterException("Amount cannot be Empty");
         }
+
+        existingOrder.setPaymentAmount(updatedOrder.getPaymentAmount());
+        existingOrder.setUpdatedOn(LocalDateTime.now());
 
         return orderRepository.save(existingOrder);
     }
@@ -84,11 +87,13 @@ public class OrderService {
         // toggling the order status
         existingOrder.setOrderStatus(!existingOrder.isOrderStatus());
 
+        existingOrder.setUpdatedOn(LocalDateTime.now());
+
         return orderRepository.save(existingOrder);
     }
 
     // delete order
-    public void deleteOrder(Long orderId, Long pharmacyId) {
+    public void deleteOrder(Long pharmacyId, Long orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
 
         // Order Id not found error handling
