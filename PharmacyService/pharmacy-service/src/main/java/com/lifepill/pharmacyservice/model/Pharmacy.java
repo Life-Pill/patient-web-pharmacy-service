@@ -1,5 +1,7 @@
 package com.lifepill.pharmacyservice.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -61,4 +63,10 @@ public class Pharmacy {
 
     @Column(name = "rating")
     private int pharmacyRating;
+
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column(name = "pharm_password", nullable = false, length = 200)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String pharmacyPassword;
 }
