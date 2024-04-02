@@ -98,6 +98,31 @@ public class PharmacyService {
         return pharmacyRepository.save(existingPharmacy);
     }
 
+    // update password
+    public String updatePharmacyPassword(Long pharmacyId, String newPassword) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+
+        // Customer Id not found error handling
+        if (pharmacy.isEmpty()) {
+            throw new ResourceNotFoundException("Customer with ID " + pharmacyId + " not found.");
+        }
+
+        if (newPassword.isEmpty()) {
+            throw new MissingParameterException("New Password cannot be Empty");
+        }
+
+        Pharmacy existingPharmacy = pharmacy.get();
+
+        existingPharmacy.setPharmacyPassword(hashPassword(newPassword));
+        pharmacyRepository.save(existingPharmacy);
+        return "Password Successfully Updated";
+    }
+
+    // hashing the password
+    public String hashPassword(String password) {
+        return password;
+    }
+
     // delete pharmacy
     public void deletePharmacy(Long id) {
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(id);

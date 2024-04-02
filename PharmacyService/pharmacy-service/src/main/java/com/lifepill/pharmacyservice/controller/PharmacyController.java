@@ -73,6 +73,14 @@ public class PharmacyController {
         return pharmacyService.updatePharmacyOpenStatus(id);
     }
 
+    // update password
+    @Tag(name = "put", description = "PUT methods of Pharmacy service API")
+    @Operation(description = "Change the password of an existing pharmacy")
+    @PutMapping("changePassword/{pharmacyId}")
+    public String updatePharmacyPassword(@PathVariable Long pharmacyId, @RequestBody Pharmacy updatedPharmacy) {
+        return pharmacyService.updatePharmacyPassword(pharmacyId, updatedPharmacy.getPharmacyPassword());
+    }
+
     // delete pharmacy
     @Tag(name = "delete", description = "DELETE methods of Pharmacy service API")
     @Operation(description = "Delete a specific pharmacy")
