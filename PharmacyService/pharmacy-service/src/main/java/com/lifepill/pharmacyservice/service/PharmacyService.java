@@ -1,13 +1,11 @@
 package com.lifepill.pharmacyservice.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lifepill.pharmacyservice.model.Order;
 import com.lifepill.pharmacyservice.model.Pharmacy;
 import com.lifepill.pharmacyservice.repo.PharmacyRepository;
 import com.lifepill.pharmacyservice.util.MissingParameterException;

@@ -52,9 +52,9 @@ public class PharmacyController {
     // get pharmacy by id
     @Tag(name = "get", description = "GET methods of Pharmacy service API")
     @Operation(description = "Get a specific pharmacy")
-    @GetMapping("/{id}")
-    public Optional<Pharmacy> getPharmacy(@PathVariable Long id) {
-        return pharmacyService.getPharmacy(id);
+    @GetMapping("/{pharmacyId}")
+    public Optional<Pharmacy> getPharmacy(@PathVariable Long pharmacyId) {
+        return pharmacyService.getPharmacy(pharmacyId);
     }
 
     // add new pharmacy
@@ -65,12 +65,20 @@ public class PharmacyController {
         return pharmacyService.addPharmacy(newPharmacy);
     }
 
+    // update pharmacy details
+    @Tag(name = "put", description = "PUT methods of Pharmacy service API")
+    @Operation(description = "Update pharmacy details")
+    @PutMapping("/{pharmacyId}")
+    public Pharmacy updatePharmacy(@PathVariable Long pharmacyId, @RequestBody Pharmacy updatedPharmacy) {
+        return pharmacyService.updatePharmacy(pharmacyId, updatedPharmacy);
+    }
+
     // update pharmacy open status
     @Tag(name = "put", description = "PUT methods of Pharmacy service API")
     @Operation(description = "Update open status of a pharmacy")
-    @PutMapping("/{id}")
-    public Pharmacy updatePharmacyOpenStatus(@PathVariable Long id) {
-        return pharmacyService.updatePharmacyOpenStatus(id);
+    @PutMapping("/status/{pharmacyId}")
+    public Pharmacy updatePharmacyOpenStatus(@PathVariable Long pharmacyId) {
+        return pharmacyService.updatePharmacyOpenStatus(pharmacyId);
     }
 
     // update password
@@ -84,11 +92,11 @@ public class PharmacyController {
     // delete pharmacy
     @Tag(name = "delete", description = "DELETE methods of Pharmacy service API")
     @Operation(description = "Delete a specific pharmacy")
-    @DeleteMapping("/{id}")
-    public String deletePharmacy(@PathVariable Long id) {
-        pharmacyService.deletePharmacy(id);
+    @DeleteMapping("/{pharmacyId}")
+    public String deletePharmacy(@PathVariable Long pharmacyId) {
+        pharmacyService.deletePharmacy(pharmacyId);
 
-        return "Pharmacy with the id " + id + " deleted successfully";
+        return "Pharmacy with the id " + pharmacyId + " deleted successfully";
     }
 
     // delete all pharmacies
