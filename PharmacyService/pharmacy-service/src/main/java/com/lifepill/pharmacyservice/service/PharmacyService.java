@@ -1,11 +1,13 @@
 package com.lifepill.pharmacyservice.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lifepill.pharmacyservice.model.Order;
 import com.lifepill.pharmacyservice.model.Pharmacy;
 import com.lifepill.pharmacyservice.repo.PharmacyRepository;
 import com.lifepill.pharmacyservice.util.MissingParameterException;
@@ -116,6 +118,51 @@ public class PharmacyService {
         existingPharmacy.setPharmacyPassword(hashPassword(newPassword));
         pharmacyRepository.save(existingPharmacy);
         return "Password Successfully Updated";
+    }
+
+    // update pharmacy
+    public Pharmacy updatePharmacy(Long pharmacyId, Pharmacy updatedPharmacy) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+
+        // error handling
+        if (pharmacy.isEmpty()) {
+            throw new ResourceNotFoundException("Order with ID " + pharmacyId + " not found.");
+        }
+
+        if (updatedPharmacy.getPharmacyName().isEmpty()) {
+            throw new MissingParameterException("Pharmacy Name cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyMobileNumber().isEmpty()) {
+            throw new MissingParameterException("Pharmacy Mobile Number cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyEmail().isEmpty()) {
+            throw new MissingParameterException("Pharmacy Email cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyAddressStreet().isEmpty()) {
+            throw new MissingParameterException("Address Street cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyAddressDistrict().isEmpty()) {
+            throw new MissingParameterException("Address District cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyAddressCity().isEmpty()) {
+            throw new MissingParameterException("Address City cannot be Empty");
+        }
+
+        Pharmacy existingPharmacy = pharmacy.get();
+
+        existingPharmacy.setPharmacyName(updatedPharmacy.getPharmacyName());
+        existingPharmacy.setPharmacyEmail(updatedPharmacy.getPharmacyEmail());
+        existingPharmacy.setPharmacyMobileNumber(updatedPharmacy.getPharmacyMobileNumber());
+        existingPharmacy.setPharmacyAddressStreet(updatedPharmacy.getPharmacyAddressStreet());
+        existingPharmacy.setPharmacyAddressDistrict(updatedPharmacy.getPharmacyAddressDistrict());
+        existingPharmacy.setPharmacyAddressCity(updatedPharmacy.getPharmacyAddressCity());
+
+        return pharmacyRepository.save(existingPharmacy);
     }
 
     // hashing the password
