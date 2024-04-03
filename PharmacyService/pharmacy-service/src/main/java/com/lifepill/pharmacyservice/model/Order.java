@@ -32,7 +32,7 @@ public class Order {
     private Long pharmacyId;
 
     @NotNull
-    @Column(name = "pharm_id", nullable = false)
+    @Column(name = "cus_id", nullable = false)
     private Long customerId;
 
     @NotNull
