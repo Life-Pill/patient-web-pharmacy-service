@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Table(name = "order")
+@Table(name = "transaction")
 public class Order {
     @Id
     @NotNull
