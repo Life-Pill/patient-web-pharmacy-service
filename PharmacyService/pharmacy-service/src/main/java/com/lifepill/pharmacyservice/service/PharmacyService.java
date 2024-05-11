@@ -32,13 +32,14 @@ public class PharmacyService {
     }
 
     // get pharmacy by id
-    public Optional<Pharmacy> getPharmacy(Long id) {
+    public Pharmacy getPharmacy(Long id) {
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(id);
 
         if (pharmacy.isEmpty()) {
             throw new ResourceNotFoundException("Pharmacy with ID " + id + " not found.");
         } else {
-            return pharmacy;
+            Pharmacy exisPharmacy = pharmacy.get();
+            return exisPharmacy;
         }
     }
 

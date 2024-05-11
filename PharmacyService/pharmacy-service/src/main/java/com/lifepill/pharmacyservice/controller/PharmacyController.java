@@ -53,7 +53,7 @@ public class PharmacyController {
     @Tag(name = "get", description = "GET methods of Pharmacy service API")
     @Operation(description = "Get a specific pharmacy")
     @GetMapping("/{pharmacyId}")
-    public Optional<Pharmacy> getPharmacy(@PathVariable Long pharmacyId) {
+    public Pharmacy getPharmacy(@PathVariable Long pharmacyId) {
         return pharmacyService.getPharmacy(pharmacyId);
     }
 
