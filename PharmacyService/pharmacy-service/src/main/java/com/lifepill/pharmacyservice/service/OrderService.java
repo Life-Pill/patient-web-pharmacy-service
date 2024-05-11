@@ -18,13 +18,14 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     // get order
-    public Optional<Order> getOrder(Long pharmacyId, Long orderId) {
+    public Order getOrder(Long pharmacyId, Long orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
 
         if (order.isEmpty() || order.get().getPharmacyId() != pharmacyId) {
             throw new ResourceNotFoundException("Pharmacy with ID " + orderId + " not found.");
         } else {
-            return order;
+            Order existingOrder = order.get();
+            return existingOrder;
         }
     }
 

@@ -1,7 +1,6 @@
 package com.lifepill.pharmacyservice.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,8 +28,8 @@ public class OrderController {
     @Tag(name = "get", description = "GET methods of Pharmacy service API")
     @Operation(description = "Get a specific order")
     @GetMapping("/{pharmacyId}/{orderId}")
-    public Optional<Order> getOrder(@PathVariable Long pharmacyId, @PathVariable Long orderId) {
-        return getOrder(pharmacyId, orderId);
+    public Order getOrder(@PathVariable Long pharmacyId, @PathVariable Long orderId) {
+        return orderService.getOrder(pharmacyId, orderId);
     }
 
     // get all orders
