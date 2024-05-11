@@ -2,6 +2,8 @@ package com.lifepill.pharmacyservice.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.Assert;
 
 import com.lifepill.pharmacyservice.controller.PharmacyController;
 import com.lifepill.pharmacyservice.model.Pharmacy;
@@ -39,6 +42,12 @@ public class TestPharmacyController {
             true,
             5,
             "password");
+
+    ArrayList<Pharmacy> mockPharmacyList = new ArrayList<Pharmacy>() {
+        {
+            add(mockPharmacy);
+        }
+    };
 
     String examplePharmacyJson = "{\"pharmacyName\":\"LifePill Pharmacy\",\"pharmacyEmail\":\"lifepill@gmail.com\", \"pharmacyMobileNumber\":\"0771231234\",\"pharmacyAddressStreet\":\"Hospital Road\", \"pharmacyAddressCity\":\"Maharagama\", \"pharmacyAddressDistrict\":\"Colombo\", \"openStatus\": true , \"pharmacyRating\": 5, \"pharmacyPassword\":\"password\"}";
 
@@ -88,6 +97,60 @@ public class TestPharmacyController {
 
         // assertEquals("http://localhost/pharmacies/1",
         // response.getHeader(HttpHeaders.LOCATION));
+    }
 
+    // testing the get all Pharmacies functionality
+    @Test
+    public void retrieveAllPharmacy() throws Exception {
+
+        Mockito.when(pharmacyService.getAllPharmacies()).thenReturn(mockPharmacyList);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pharmacies").accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        System.out.println(result.getResponse());
+        String expected = "[{\"pharmacyName\":\"LifePill Pharmacy\",\"pharmacyEmail\":\"lifepill@gmail.com\", \"pharmacyMobileNumber\":\"0771231234\",\"pharmacyAddressStreet\":\"Hospital Road\", \"pharmacyAddressCity\":\"Maharagama\", \"pharmacyAddressDistrict\":\"Colombo\", \"openStatus\": true , \"pharmacyRating\": 5}]";
+
+        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+        Assert.isTrue(result.getResponse().getContentAsString().contains("Colombo"), "Passed");
+    }
+
+    // testing the get Pharmacies by city functionality
+    @Test
+    public void retrievePharmaciesByCity() throws Exception {
+
+        Mockito.when(pharmacyService.getPharmacyByCity(Mockito.anyString())).thenReturn(mockPharmacyList);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pharmacies/city=Maharagama")
+                .accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        System.out.println(result.getResponse());
+        String expected = "[{\"pharmacyName\":\"LifePill Pharmacy\",\"pharmacyEmail\":\"lifepill@gmail.com\", \"pharmacyMobileNumber\":\"0771231234\",\"pharmacyAddressStreet\":\"Hospital Road\", \"pharmacyAddressCity\":\"Maharagama\", \"pharmacyAddressDistrict\":\"Colombo\", \"openStatus\": true , \"pharmacyRating\": 5}]";
+
+        // JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(),
+        // false);
+        Assert.isTrue(result.getResponse().getContentAsString().contains("Maharagama"), expected);
+    }
+
+    // testing the get Pharmacies by district functionality
+    @Test
+    public void retrievePharmaciesByDistrict() throws Exception {
+
+        Mockito.when(pharmacyService.getPharmacyByDistrict(Mockito.anyString())).thenReturn(mockPharmacyList);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pharmacies/district=Colombo")
+                .accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        System.out.println(result.getResponse());
+        String expected = "[{\"pharmacyName\":\"LifePill Pharmacy\",\"pharmacyEmail\":\"lifepill@gmail.com\", \"pharmacyMobileNumber\":\"0771231234\",\"pharmacyAddressStreet\":\"Hospital Road\", \"pharmacyAddressCity\":\"Maharagama\", \"pharmacyAddressDistrict\":\"Colombo\", \"openStatus\": true , \"pharmacyRating\": 5}]";
+
+        // JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(),
+        // false);
+        Assert.isTrue(result.getResponse().getContentAsString().contains("Colombo"), expected);
     }
 }
