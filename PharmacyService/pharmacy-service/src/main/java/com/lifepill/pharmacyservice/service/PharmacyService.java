@@ -32,13 +32,14 @@ public class PharmacyService {
     }
 
     // get pharmacy by id
-    public Optional<Pharmacy> getPharmacy(Long id) {
+    public Pharmacy getPharmacy(Long id) {
         Optional<Pharmacy> pharmacy = pharmacyRepository.findById(id);
 
         if (pharmacy.isEmpty()) {
             throw new ResourceNotFoundException("Pharmacy with ID " + id + " not found.");
         } else {
-            return pharmacy;
+            Pharmacy exisPharmacy = pharmacy.get();
+            return exisPharmacy;
         }
     }
 
@@ -96,6 +97,76 @@ public class PharmacyService {
         existingPharmacy.setOpenStatus(!existingPharmacy.getOpenStatus());
 
         return pharmacyRepository.save(existingPharmacy);
+    }
+
+    // update password
+    public String updatePharmacyPassword(Long pharmacyId, String newPassword) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+
+        // Customer Id not found error handling
+        if (pharmacy.isEmpty()) {
+            throw new ResourceNotFoundException("Customer with ID " + pharmacyId + " not found.");
+        }
+
+        if (newPassword.isEmpty()) {
+            throw new MissingParameterException("New Password cannot be Empty");
+        }
+
+        Pharmacy existingPharmacy = pharmacy.get();
+
+        existingPharmacy.setPharmacyPassword(hashPassword(newPassword));
+        pharmacyRepository.save(existingPharmacy);
+        return "Password Successfully Updated";
+    }
+
+    // update pharmacy
+    public Pharmacy updatePharmacy(Long pharmacyId, Pharmacy updatedPharmacy) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+
+        // error handling
+        if (pharmacy.isEmpty()) {
+            throw new ResourceNotFoundException("Order with ID " + pharmacyId + " not found.");
+        }
+
+        if (updatedPharmacy.getPharmacyName().isEmpty()) {
+            throw new MissingParameterException("Pharmacy Name cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyMobileNumber().isEmpty()) {
+            throw new MissingParameterException("Pharmacy Mobile Number cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyEmail().isEmpty()) {
+            throw new MissingParameterException("Pharmacy Email cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyAddressStreet().isEmpty()) {
+            throw new MissingParameterException("Address Street cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyAddressDistrict().isEmpty()) {
+            throw new MissingParameterException("Address District cannot be Empty");
+        }
+
+        if (updatedPharmacy.getPharmacyAddressCity().isEmpty()) {
+            throw new MissingParameterException("Address City cannot be Empty");
+        }
+
+        Pharmacy existingPharmacy = pharmacy.get();
+
+        existingPharmacy.setPharmacyName(updatedPharmacy.getPharmacyName());
+        existingPharmacy.setPharmacyEmail(updatedPharmacy.getPharmacyEmail());
+        existingPharmacy.setPharmacyMobileNumber(updatedPharmacy.getPharmacyMobileNumber());
+        existingPharmacy.setPharmacyAddressStreet(updatedPharmacy.getPharmacyAddressStreet());
+        existingPharmacy.setPharmacyAddressDistrict(updatedPharmacy.getPharmacyAddressDistrict());
+        existingPharmacy.setPharmacyAddressCity(updatedPharmacy.getPharmacyAddressCity());
+
+        return pharmacyRepository.save(existingPharmacy);
+    }
+
+    // hashing the password
+    public String hashPassword(String password) {
+        return password;
     }
 
     // delete pharmacy
