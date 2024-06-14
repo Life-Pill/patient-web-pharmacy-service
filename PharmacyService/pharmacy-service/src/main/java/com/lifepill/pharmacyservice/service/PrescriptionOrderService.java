@@ -16,9 +16,9 @@ public class PrescriptionOrderService {
     @Autowired
     private PrescriptionOrderRepository prescriptionOrderRepository;
 
-    // get all prescription orders related to a specific pharmacy
+    // get all active prescription orders
     public List<PrescriptionOrder> getAllPrescriptionOrders(Long pharmacyId) {
-        return prescriptionOrderRepository.findBySelectedPharmacyId(pharmacyId);
+        return prescriptionOrderRepository.findByOrderStatus(false);
     }
 
     // get a specific prescription orders related to a specific pharmacy
@@ -42,6 +42,11 @@ public class PrescriptionOrderService {
         }
 
         PrescriptionOrder existingPrescriptionOrder = prescriptionOrder.get();
+
+        if (existingPrescriptionOrder.isOrderStatus()) {
+            throw new ResourceNotFoundException("Order has been closed.");
+        }
+
         existingPrescriptionOrder.getAvailablePharmacies().add(pharmacyId);
         prescriptionOrderRepository.save(existingPrescriptionOrder);
         return existingPrescriptionOrder;

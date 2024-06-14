@@ -6,5 +6,5 @@ import com.lifepill.pharmacyservice.model.PrescriptionOrder;
 import java.util.List;
 
 public interface PrescriptionOrderRepository extends MongoRepository<PrescriptionOrder, String> {
-    List<PrescriptionOrder> findBySelectedPharmacyId(Long pharmacyId);
+    List<PrescriptionOrder> findByOrderStatus(boolean orderStatus);
 }
