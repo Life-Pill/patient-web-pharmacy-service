@@ -18,8 +18,8 @@ public class PrescriptionOrder {
     private String id;
     private Long customerId;
     private String prescriptionId;
-    private List<String> availablePharmacies;
-    private String selectedPharmacyId;
+    private List<Long> availablePharmacies;
+    private Long selectedPharmacyId;
     private boolean orderStatus;
     private LocalDateTime createdOn;
 
