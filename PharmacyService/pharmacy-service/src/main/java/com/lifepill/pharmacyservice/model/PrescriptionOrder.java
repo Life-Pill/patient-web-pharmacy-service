@@ -21,6 +21,7 @@ public class PrescriptionOrder {
     private List<Long> availablePharmacies;
     private Long selectedPharmacyId;
     private boolean orderStatus;
+    private String customerMessage;
     private LocalDateTime createdOn;
 
     public PrescriptionOrder() {
