@@ -39,7 +39,7 @@ public class PrescriptionOrderController {
     @Operation(description = "Update an existing prescription order")
     @PutMapping("/{prescriptionOrderId}/{selectedPharmacyId}")
     public PrescriptionOrder updatePrescriptionOrderAvailablility(@PathVariable String prescriptionOrderId,
-            @PathVariable Long pharmacyId) {
-        return prescriptionOrderService.updatePrescriptionOrderAvailablility(prescriptionOrderId, pharmacyId);
+            @PathVariable Long pharmacyId, @RequestBody String reply) {
+        return prescriptionOrderService.updatePrescriptionOrderAvailablility(prescriptionOrderId, pharmacyId, reply);
     }
 }

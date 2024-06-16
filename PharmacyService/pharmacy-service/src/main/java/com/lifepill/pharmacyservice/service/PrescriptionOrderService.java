@@ -33,7 +33,8 @@ public class PrescriptionOrderService {
     }
 
     // update the status of the available pharmacies list
-    public PrescriptionOrder updatePrescriptionOrderAvailablility(String prescriptionOrderId, Long pharmacyId) {
+    public PrescriptionOrder updatePrescriptionOrderAvailablility(String prescriptionOrderId, Long pharmacyId,
+            String reply) {
         Optional<PrescriptionOrder> prescriptionOrder = prescriptionOrderRepository.findById(prescriptionOrderId);
 
         if (prescriptionOrder.isEmpty()) {
@@ -47,7 +48,7 @@ public class PrescriptionOrderService {
             throw new ResourceNotFoundException("Order has been closed.");
         }
 
-        existingPrescriptionOrder.getAvailablePharmacies().add(pharmacyId);
+        existingPrescriptionOrder.getAvailablePharmacies().put(pharmacyId, reply);
         prescriptionOrderRepository.save(existingPrescriptionOrder);
         return existingPrescriptionOrder;
     }
