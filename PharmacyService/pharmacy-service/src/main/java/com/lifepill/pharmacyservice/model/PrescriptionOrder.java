@@ -18,6 +18,7 @@ public class PrescriptionOrder {
     private String id;
     private Long customerId;
     private String prescriptionId;
+    private String prescriptionImageId;
     private Map<Long, String> availablePharmacies;
     private Long selectedPharmacyId;
     private boolean orderStatus;
