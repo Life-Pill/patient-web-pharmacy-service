@@ -21,7 +21,7 @@ public class PrescriptionOrderController {
     // get all prescription orders
     @Tag(name = "get", description = "GET methods of Pharmacy service API")
     @Operation(description = "Get all prescription orders related to a pharmacy")
-    @GetMapping("/{pharmacyId}")
+    @GetMapping("myOrders/{pharmacyId}")
     public List<PrescriptionOrder> getAllPrescriptionOrders(@PathVariable Long pharmacyId) {
         return prescriptionOrderService.getAllPrescriptionOrders(pharmacyId);
     }
