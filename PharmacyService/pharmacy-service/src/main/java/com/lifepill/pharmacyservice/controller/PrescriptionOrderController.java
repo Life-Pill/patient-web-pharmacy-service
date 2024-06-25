@@ -37,7 +37,7 @@ public class PrescriptionOrderController {
     // update the selected prescription order
     @Tag(name = "put", description = "PUT methods of Pharmacy service API")
     @Operation(description = "Update an existing prescription order")
-    @PutMapping("/{prescriptionOrderId}/{selectedPharmacyId}")
+    @PutMapping("/{prescriptionOrderId}/{pharmacyId}")
     public PrescriptionOrder updatePrescriptionOrderAvailablility(@PathVariable String prescriptionOrderId,
             @PathVariable Long pharmacyId, @RequestBody String reply) {
         return prescriptionOrderService.updatePrescriptionOrderAvailablility(prescriptionOrderId, pharmacyId, reply);

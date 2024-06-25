@@ -7,7 +7,9 @@ import com.lifepill.pharmacyservice.model.PrescriptionOrder;
 import com.lifepill.pharmacyservice.repo.PrescriptionOrderRepository;
 import com.lifepill.pharmacyservice.util.ResourceNotFoundException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,8 +50,16 @@ public class PrescriptionOrderService {
             throw new ResourceNotFoundException("Order has been closed.");
         }
 
-        existingPrescriptionOrder.getAvailablePharmacies().put(pharmacyId, reply);
-        prescriptionOrderRepository.save(existingPrescriptionOrder);
-        return existingPrescriptionOrder;
+        if (existingPrescriptionOrder.getAvailablePharmacies() == null) {
+            Map<Long, String> map = new HashMap<>();
+            map.put(pharmacyId, reply);
+            existingPrescriptionOrder.setAvailablePharmacies(map);
+            prescriptionOrderRepository.save(existingPrescriptionOrder);
+            return existingPrescriptionOrder;
+        } else {
+            existingPrescriptionOrder.getAvailablePharmacies().put(pharmacyId, reply);
+            prescriptionOrderRepository.save(existingPrescriptionOrder);
+            return existingPrescriptionOrder;
+        }
     }
 }
