@@ -8,7 +8,7 @@ WORKDIR /app
 COPY env.properties /app
 
 # Copy the Maven executable JAR file into the container
-COPY target/ lifepill-pharmacy-service.jar  /app
+COPY target/ lifepill-pharmacy-service.jar /app
 
 # Expose the port your application runs on
 EXPOSE 8075
