@@ -11,7 +11,7 @@ COPY env.properties /app
 COPY target/lifepill-pharmacy-service.jar /app
 
 # Expose the port your application runs on
-EXPOSE 8081
+EXPOSE 8075
 
 # Command to run the application when the container starts
 CMD ["java", "-jar", "lifepill-pharmacy-service.jar"]
