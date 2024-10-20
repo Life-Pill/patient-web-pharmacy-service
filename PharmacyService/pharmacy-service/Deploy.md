@@ -52,7 +52,7 @@ Ensure you have the following tools installed:
    Start the container in detached mode (`-d` flag) and map port `8075` from the container to your local machine:
 
    ```bash
-   docker run -p 8075:8075 lifepill-pharmacy-service -d
+   docker run -d -p 8075:8075 lifepill-pharmacy-service
    ```
 
    This command will run the application in the background, and it will be accessible on `http://localhost:8075`.
