@@ -1,0 +1,88 @@
+name: Build and Deploy Pharmacy Service
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - fix/*
+    paths:
+      - "PharmacyService/pharmacy-service/**"
+      - ".github/workflows/ci-cd-deploy.yml"
+  workflow_dispatch:
+
+env:
+  SERVICE_NAME: lifepill-pharmacy-service
+  SERVICE_PORT: 8060
+  WORKING_DIR: ./PharmacyService/pharmacy-service
+
+jobs:
+  build-and-deploy:
+    name: Build Docker and Deploy
+    runs-on: [self-hosted, linux, x64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate version tag
+        id: version
+        run: |
+          VERSION=$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA:0:8}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
+
+      - name: Build Docker image
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          docker build -t ${{ env.SERVICE_NAME }}:${{ steps.version.outputs.version }} .
+          docker tag ${{ env.SERVICE_NAME }}:${{ steps.version.outputs.version }} ${{ env.SERVICE_NAME }}:latest
+
+      - name: Stop existing container
+        run: |
+          docker stop ${{ env.SERVICE_NAME }} 2>/dev/null || true
+          docker rm ${{ env.SERVICE_NAME }} 2>/dev/null || true
+
+      - name: Deploy container
+        run: |
+          echo "Deploying container with local database connections..."
+          docker run -d \
+            --name ${{ env.SERVICE_NAME }} \
+            -p ${{ env.SERVICE_PORT }}:${{ env.SERVICE_PORT }} \
+            --network lifepill-customer-mobi_lifepill-network \
+            -e DB_DATABASE_URL="jdbc:postgresql://lifepill-postgres:5432/lifepill" \
+            -e DB_USER="postgres" \
+            -e DB_PASSWORD="postgres" \
+            -e MDB_CONNECTION_STRING="mongodb://lifepill-mongo:27017/lifepill" \
+            -e STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY || 'sk_test_dummy_key' }}" \
+            --restart unless-stopped \
+            ${{ env.SERVICE_NAME }}:latest
+
+      - name: Wait for service to be ready
+        run: |
+          echo "Waiting for service to start..."
+          for i in {1..30}; do
+            if curl -f http://localhost:${{ env.SERVICE_PORT }}/actuator/health 2>/dev/null; then
+              echo "Service is up and running!"
+              exit 0
+            fi
+            echo "Attempt $i/30: Service not ready yet..."
+            sleep 5
+          done
+          echo "Service failed to start within timeout"
+          docker logs ${{ env.SERVICE_NAME }}
+          exit 1
+
+      - name: Show deployment status
+        run: |
+          echo "## 🚀 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Service:** ${{ env.SERVICE_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Port:** ${{ env.SERVICE_PORT }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Container Status:**" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          docker ps --filter "name=${{ env.SERVICE_NAME }}" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
